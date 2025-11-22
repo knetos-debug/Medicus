@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - claude/clinical-ai-pwa-01QFyTvECaXN6RVYhW24LQ7B
   pull_request:
     branches:
       - main
+      - claude/clinical-ai-pwa-01QFyTvECaXN6RVYhW24LQ7B
 
 jobs:
   build-and-deploy:
@@ -32,7 +34,7 @@ jobs:
         run: flutter build web --release --web-renderer canvaskit
 
       - name: Deploy to Vercel (Production)
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/claude/clinical-ai-pwa-01QFyTvECaXN6RVYhW24LQ7B') && github.event_name == 'push'
         uses: amondnet/vercel-action@v25
         with:
           vercel-token: ${{ secrets.VERCEL_TOKEN }}
