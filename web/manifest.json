@@ -1,0 +1,72 @@
+{
+    "name": "Klinisk AI Assistent",
+    "short_name": "Klinisk AI",
+    "description": "Kliniskt beslutsstöd för svenska läkare med AI - BYOK (Bring Your Own Key)",
+    "start_url": "/",
+    "display": "standalone",
+    "background_color": "#FFFFFF",
+    "theme_color": "#2196F3",
+    "orientation": "portrait-primary",
+    "scope": "/",
+    "lang": "sv-SE",
+    "categories": ["medical", "health", "productivity"],
+    "icons": [
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable any"
+        },
+        {
+            "src": "icons/Icon-192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "icons/Icon-512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "screenshots/screenshot-1.png",
+            "sizes": "540x720",
+            "type": "image/png"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Ny fråga",
+            "short_name": "Ny fråga",
+            "description": "Ställ en ny klinisk fråga",
+            "url": "/",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Historik",
+            "short_name": "Historik",
+            "description": "Visa tidigare frågor",
+            "url": "/history",
+            "icons": [
+                {
+                    "src": "icons/Icon-192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}
