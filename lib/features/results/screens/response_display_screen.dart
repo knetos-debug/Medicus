@@ -52,7 +52,7 @@ class ResponseDisplayScreen extends StatelessWidget {
             children: [
               // Query card
               Card(
-                color: AppColors.primaryLight.withOpacity(0.2),
+                color: AppColors.primaryLight.withValues(alpha: 0.2),
                 child: Padding(
                   padding: const EdgeInsets.all(Constants.spacingMedium),
                   child: Column(
@@ -156,7 +156,7 @@ class ResponseDisplayScreen extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(Constants.spacingMedium),
                 decoration: BoxDecoration(
-                  color: AppColors.warningLight.withOpacity(0.3),
+                  color: AppColors.warningLight.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(Constants.radiusMedium),
                   border: Border.all(color: AppColors.warning),
                 ),
@@ -188,10 +188,16 @@ class ResponseDisplayScreen extends StatelessWidget {
   }
 
   IconData _getProviderIcon(String provider) {
-    if (provider.toLowerCase().contains('claude')) return Icons.psychology;
+    if (provider.toLowerCase().contains('claude')) {
+      return Icons.psychology;
+    }
     if (provider.toLowerCase().contains('gpt') ||
-        provider.toLowerCase().contains('openai')) return Icons.chat;
-    if (provider.toLowerCase().contains('gemini')) return Icons.stars;
+        provider.toLowerCase().contains('openai')) {
+      return Icons.chat;
+    }
+    if (provider.toLowerCase().contains('gemini')) {
+      return Icons.stars;
+    }
     return Icons.help_outline;
   }
 }

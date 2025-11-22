@@ -132,7 +132,7 @@ class _CredentialSetupScreenState
 
                 // Security info card
                 Card(
-                  color: AppColors.primaryLight.withOpacity(0.3),
+                  color: AppColors.primaryLight.withValues(alpha: 0.3),
                   child: Padding(
                     padding: const EdgeInsets.all(Constants.spacingMedium),
                     child: Column(

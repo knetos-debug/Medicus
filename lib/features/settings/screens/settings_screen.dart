@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/config/app_config.dart';
+import '../../../core/models/ai_provider.dart';
 import '../../../shared/theme/app_colors.dart';
 import '../../../shared/utils/constants.dart';
 import '../../auth/providers/auth_provider.dart';

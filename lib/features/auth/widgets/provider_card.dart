@@ -34,7 +34,7 @@ class ProviderCard extends StatelessWidget {
                 width: 60,
                 height: 60,
                 decoration: BoxDecoration(
-                  color: AppColors.primaryLight.withOpacity(0.3),
+                  color: AppColors.primaryLight.withValues(alpha: 0.3),
                   borderRadius: BorderRadius.circular(Constants.radiusMedium),
                 ),
                 child: Icon(

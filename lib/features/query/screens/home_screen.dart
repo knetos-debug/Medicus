@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/config/app_config.dart';
 import '../../../core/config/system_prompt.dart';
+import '../../../core/models/ai_provider.dart';
 import '../../../shared/theme/app_colors.dart';
 import '../../../shared/utils/constants.dart';
 import '../../../shared/utils/validators.dart';
@@ -70,7 +70,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(Constants.spacingSmall),
-              color: AppColors.primaryLight.withOpacity(0.3),
+              color: AppColors.primaryLight.withValues(alpha: 0.3),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -97,7 +97,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
               padding: const EdgeInsets.all(Constants.spacingMedium),
               margin: const EdgeInsets.all(Constants.spacingMedium),
               decoration: BoxDecoration(
-                color: AppColors.warningLight.withOpacity(0.3),
+                color: AppColors.warningLight.withValues(alpha: 0.3),
                 borderRadius: BorderRadius.circular(Constants.radiusMedium),
                 border: Border.all(color: AppColors.warning),
               ),

@@ -5,7 +5,6 @@ import '../models/search_history_item.dart';
 /// Service for managing search history
 class HistoryStorageService {
   static const String _historyKey = 'search_history';
-  static const String _favoritesKey = 'favorite_items';
   static const int _maxHistoryItems = 100;
 
   /// Save a search history item

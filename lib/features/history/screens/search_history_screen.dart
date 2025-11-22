@@ -68,7 +68,7 @@ class SearchHistoryScreen extends ConsumerWidget {
                   Icon(
                     Icons.history,
                     size: 64,
-                    color: AppColors.textSecondary.withOpacity(0.5),
+                    color: AppColors.textSecondary.withValues(alpha: 0.5),
                   ),
                   const SizedBox(height: Constants.spacingMedium),
                   Text(
@@ -189,10 +189,16 @@ class SearchHistoryScreen extends ConsumerWidget {
   }
 
   IconData _getProviderIcon(String provider) {
-    if (provider.toLowerCase().contains('claude')) return Icons.psychology;
+    if (provider.toLowerCase().contains('claude')) {
+      return Icons.psychology;
+    }
     if (provider.toLowerCase().contains('gpt') ||
-        provider.toLowerCase().contains('openai')) return Icons.chat;
-    if (provider.toLowerCase().contains('gemini')) return Icons.stars;
+        provider.toLowerCase().contains('openai')) {
+      return Icons.chat;
+    }
+    if (provider.toLowerCase().contains('gemini')) {
+      return Icons.stars;
+    }
     return Icons.help_outline;
   }
 }
