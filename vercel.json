@@ -1,4 +1,6 @@
 {
+  "buildCommand": "echo 'Build handled by GitHub Actions'",
+  "outputDirectory": "build/web",
   "rewrites": [
     {
       "source": "/(.*)",
