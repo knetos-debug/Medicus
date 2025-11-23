@@ -10,9 +10,9 @@ class APIEndpoints {
   static const String openaiModel = 'gpt-4-turbo-preview';
 
   // Google (Gemini)
-  // Note: Gemini 1.5 models are only available in v1beta API
+  // Note: Using Gemini 2.5 Flash - stable model as of 2025
   static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
-  static const String geminiModel = 'gemini-1.5-flash';
+  static const String geminiModel = 'gemini-2.5-flash';
 
   static String geminiGenerateContent(String apiKey) {
     return '$geminiBaseUrl/models/$geminiModel:generateContent?key=$apiKey';
