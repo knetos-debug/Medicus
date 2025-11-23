@@ -91,6 +91,14 @@ class GeminiService implements AIProvider {
             } else if (response.statusCode == 403) {
               errorMessage = 'API-nyckeln saknar behörighet eller Gemini API är inte aktiverat.\n\n'
                            'Aktivera Gemini API på: https://makersuite.google.com';
+            } else if (response.statusCode == 404) {
+              errorMessage = 'Gemini API endpoint hittades inte.\n\n'
+                           'Detta betyder ofta att:\n'
+                           '• Generative Language API inte är aktiverat för ditt projekt\n'
+                           '• API-nyckeln är skapad för fel projekt\n'
+                           '• Modellen "${APIEndpoints.geminiModel}" inte är tillgänglig\n\n'
+                           'Aktivera API:et på: https://console.cloud.google.com/apis/library/generativelanguage.googleapis.com\n'
+                           'Eller skapa ny API-nyckel på: https://aistudio.google.com/app/apikey';
             } else if (response.statusCode == 429) {
               errorMessage = 'Rate limit nådd. Försök igen om en stund.';
             }
