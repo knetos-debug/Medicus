@@ -106,6 +106,42 @@ class ResponseDisplayScreen extends StatelessWidget {
                         response.provider,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
+                      // Show grounded badge if response used web search
+                      if (response.metadata?['grounded'] == true) ...[
+                        const SizedBox(width: Constants.spacingSmall),
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 2,
+                          ),
+                          decoration: BoxDecoration(
+                            color: AppColors.successGreen,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                Icons.public,
+                                size: 10,
+                                color: Colors.white,
+                              ),
+                              const SizedBox(width: 2),
+                              Text(
+                                'Real-time',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
                     ],
                   ),
                   Text(
@@ -169,6 +205,85 @@ class ResponseDisplayScreen extends StatelessWidget {
               ),
               const SizedBox(height: Constants.spacingLarge),
 
+              // Grounding sources (if available)
+              if (response.metadata?['grounded'] == true &&
+                  response.metadata?['sources'] != null &&
+                  (response.metadata!['sources'] as List).isNotEmpty)
+                Card(
+                  color: AppColors.accentLight.withValues(alpha: 0.3),
+                  child: Padding(
+                    padding: const EdgeInsets.all(Constants.spacingMedium),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.public,
+                              color: AppColors.successGreen,
+                              size: 20,
+                            ),
+                            const SizedBox(width: Constants.spacingSmall),
+                            Text(
+                              'Källhänvisningar från webben (Google Search)',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .titleSmall
+                                  ?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.successGreen,
+                                  ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: Constants.spacingSmall),
+                        Text(
+                          'Informationen ovan baseras på följande aktuella källor:',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                        const SizedBox(height: Constants.spacingSmall),
+                        ...((response.metadata!['sources'] as List).map((source) {
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Constants.spacingSmall / 2,
+                            ),
+                            child: InkWell(
+                              onTap: () => _launchUrl(source['uri'], context),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Icon(
+                                    Icons.link,
+                                    size: 16,
+                                    color: AppColors.primary,
+                                  ),
+                                  const SizedBox(width: Constants.spacingSmall),
+                                  Expanded(
+                                    child: Text(
+                                      source['title'] as String,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodySmall
+                                          ?.copyWith(
+                                            color: AppColors.primary,
+                                            decoration: TextDecoration.underline,
+                                            fontWeight: FontWeight.w600,
+                                          ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        })),
+                      ],
+                    ),
+                  ),
+                ),
+
+              if (response.metadata?['grounded'] == true)
+                const SizedBox(height: Constants.spacingMedium),
+
               // Disclaimer
               Container(
                 padding: const EdgeInsets.all(Constants.spacingMedium),
@@ -188,7 +303,9 @@ class ResponseDisplayScreen extends StatelessWidget {
                     const SizedBox(width: Constants.spacingSmall),
                     Expanded(
                       child: Text(
-                        'AI-modellens kunskap kan vara föråldrad. Verifiera ALLTID rekommendationer genom att klicka på källhänvisningarna för aktuell information. Använd ditt kliniska omdöme.',
+                        response.metadata?['grounded'] == true
+                            ? 'Informationen är hämtad från aktuella webbkällor via Google Search. Verifiera alltid rekommendationer genom att klicka på källhänvisningarna. Använd ditt kliniska omdöme.'
+                            : 'AI-modellens kunskap kan vara föråldrad. Verifiera ALLTID rekommendationer genom att klicka på källhänvisningarna för aktuell information. Använd ditt kliniska omdöme.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),

@@ -40,6 +40,11 @@ class GeminiService implements AIProvider {
                   ]
                 }
               ],
+              'tools': [
+                {
+                  'google_search': {}  // Enable Google Search grounding!
+                }
+              ],
               'generationConfig': {
                 'maxOutputTokens': 4096,
                 'temperature': 0.7,
@@ -62,14 +67,39 @@ class GeminiService implements AIProvider {
         final content =
             data['candidates'][0]['content']['parts'][0]['text'] as String;
 
+        // Extract grounding metadata (citations from Google Search)
+        final groundingMetadata = data['candidates'][0]['groundingMetadata'];
+        final Map<String, dynamic> metadata = {
+          'model': APIEndpoints.geminiModel,
+          'grounded': groundingMetadata != null,
+        };
+
+        // Parse grounding sources (web citations)
+        if (groundingMetadata != null) {
+          final webSearchQueries = groundingMetadata['webSearchQueries'] as List?;
+          final groundingChunks = groundingMetadata['groundingChunks'] as List?;
+
+          metadata['searchQueries'] = webSearchQueries ?? [];
+
+          // Extract source URLs and titles
+          if (groundingChunks != null && groundingChunks.isNotEmpty) {
+            final sources = groundingChunks.map((chunk) {
+              final web = chunk['web'];
+              return {
+                'uri': web?['uri'] ?? '',
+                'title': web?['title'] ?? 'Källa',
+              };
+            }).toList();
+            metadata['sources'] = sources;
+          }
+        }
+
         return QueryResponse(
           content: content,
           provider: providerName,
           timestamp: DateTime.now(),
           success: true,
-          metadata: {
-            'model': APIEndpoints.geminiModel,
-          },
+          metadata: metadata,
         );
       } else {
         // Parse Gemini error format
