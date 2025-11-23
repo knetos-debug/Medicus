@@ -188,7 +188,7 @@ class ResponseDisplayScreen extends StatelessWidget {
                     const SizedBox(width: Constants.spacingSmall),
                     Expanded(
                       child: Text(
-                        'Verifiera alltid AI-genererade rekommendationer genom att klicka på källhänvisningarna och använd ditt kliniska omdöme.',
+                        'AI-modellens kunskap kan vara föråldrad. Verifiera ALLTID rekommendationer genom att klicka på källhänvisningarna för aktuell information. Använd ditt kliniska omdöme.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),

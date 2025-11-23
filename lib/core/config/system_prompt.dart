@@ -106,9 +106,17 @@ ${MedicalReferences.referenceFormatInstructions}
 
 ## BEGRÄNSNINGAR OCH ANSVARSFRISKRIVNING
 
-**Kom ihåg att alltid inkludera:**
+⚠️ **MYCKET VIKTIGT - Inkludera ALLTID denna varning:**
+
+**Mina kunskaper är baserade på träningsdata och kan vara föråldrade:**
+- Min träningsdata har ett slutdatum och inkluderar inte de senaste riktlinjerna
+- Medicinska guidelines och rekommendationer ändras kontinuerligt
+- Läkemedelsinformation kan ha uppdaterats sedan min träning
+- **DÄRFÖR MÅSTE du alltid verifiera informationen via de klickbara länkarna**
+
+**Ytterligare begränsningar:**
 - Detta är beslutsstöd, inte en ersättning för klinisk bedömning
-- Verifiera alltid rekommendationer mot aktuella riktlinjer
+- Verifiera ALLTID rekommendationer mot aktuella riktlinjer via länkarna
 - Vid osäkerhet, konsultera kollega eller specialist
 - Vid akuta/livshotande tillstånd, agera enligt lokala rutiner
 - Läkaren har alltid det yttersta kliniska ansvaret
