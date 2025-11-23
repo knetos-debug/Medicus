@@ -1,9 +1,41 @@
-/// Swedish medical reference URLs for clinical decision support
+/// Swedish medical reference URLs and whitelist for clinical decision support
 ///
-/// IMPORTANT: These URLs are VERIFIED and STABLE. Do not generate new URLs.
-/// All URLs use search endpoints or stable home pages to avoid 404 errors.
+/// WHITELIST: Only these domains are trusted for medical information
+/// AI must search these sources BEFORE answering any medical question
 class MedicalReferences {
-  // STABLE SEARCH URLs - These are the ONLY URLs the AI should use
+  // ═══════════════════════════════════════════════════════════
+  // WHITELISTED DOMAINS (AI can ONLY use these)
+  // ═══════════════════════════════════════════════════════════
+
+  /// Primary sources (always search these first)
+  static const List<String> primaryDomains = [
+    'fass.se',                    // Drug information
+    'vardhandboken.se',           // Clinical guidelines
+    'lakemedelsboken.se',         // Pharmacology
+    'vardpersonal.1177.se',       // Professional knowledge + local guidelines
+  ];
+
+  /// Secondary sources (use when needed)
+  static const List<String> secondaryDomains = [
+    'socialstyrelsen.se',         // National guidelines
+    'janusinfo.se',               // Drug interactions
+    'internetmedicin.se',         // Disease information
+    'cancercentrum.se',           // Cancer care programs
+  ];
+
+  /// Tertiary sources (international guidelines)
+  static const List<String> tertiaryDomains = [
+    'escardio.org',               // ESC guidelines
+    'nice.org.uk',                // NICE guidelines
+  ];
+
+  /// All whitelisted domains combined
+  static List<String> get allWhitelistedDomains =>
+      [...primaryDomains, ...secondaryDomains, ...tertiaryDomains];
+
+  // ═══════════════════════════════════════════════════════════
+  // STABLE SEARCH URLs
+  // ═══════════════════════════════════════════════════════════
 
   /// FASS search - Use this format for ALL drug lookups
   /// Example: https://www.fass.se/LIF/produktfakta/sok/?query=metformin
@@ -13,6 +45,10 @@ class MedicalReferences {
   /// Example: https://www.vardhandboken.se/sok/?q=diabetes
   static const String vardhandbokenSearch = 'https://www.vardhandboken.se/sok/?q=';
 
+  /// 1177 Vårdpersonal search - Professional clinical knowledge
+  /// Example: https://vardpersonal.1177.se/kunskapsstod/kliniska-kunskapsstod/
+  static const String vardpersonal1177Base = 'https://vardpersonal.1177.se';
+
   /// Internetmedicin search - Use this for disease information
   /// Example: https://www.internetmedicin.se/search?q=hypertoni
   static const String internetMedicinSearch = 'https://www.internetmedicin.se/search?q=';
@@ -20,10 +56,6 @@ class MedicalReferences {
   /// Janusinfo search - Use this for regional drug information
   /// Example: https://janusinfo.se/?s=interaktioner
   static const String janusinfoSearch = 'https://janusinfo.se/?s=';
-
-  /// 1177 search - Use this for patient information
-  /// Example: https://www.1177.se/hitta-vard/sök/?q=diabetes
-  static const String vardguiden1177Search = 'https://www.1177.se/hitta-vard/sok/?q=';
 
   // STABLE HOME URLs - Use these for general references
 
@@ -76,142 +108,112 @@ class MedicalReferences {
 
   /// Comprehensive reference list for system prompt
   static const String referencesGuide = '''
-## TILLÅTNA SVENSKA MEDICINSKA KÄLLOR
+## WHITELISTED SOURCES (MANDATORY)
 
-⚠️ VIKTIGT: Använd ENDAST dessa URL-format. Generera ALDRIG egna URLs!
+⚠️ Du FÅR ENDAST använda information från dessa källor!
+⚠️ ALL information MÅSTE komma från aktuella sökresultat, INTE träningsdata!
 
-### Läkemedel och doseringar:
+### PRIMÄRA KÄLLOR (Sök här FÖRST):
 
-**FASS - För ALLA läkemedel:**
-Format: https://www.fass.se/LIF/produktfakta/sok/?query=LÄKEMEDELSNAMN
-Exempel:
-- [FASS - Metformin](https://www.fass.se/LIF/produktfakta/sok/?query=metformin)
-- [FASS - Enalapril](https://www.fass.se/LIF/produktfakta/sok/?query=enalapril)
-- [FASS - Simvastatin](https://www.fass.se/LIF/produktfakta/sok/?query=simvastatin)
+1. **FASS** (fass.se)
+   - Läkemedelsinformation, doseringar, interaktioner
+   - ALLTID första källan för läkemedel!
 
-**Läkemedelsboken - Allmän farmakologi:**
-- [Läkemedelsboken](https://lakemedelsboken.se)
+2. **Vårdhandboken** (vardhandboken.se)
+   - Svenska kliniska riktlinjer
+   - Evidensbaserade vårdprogram
 
-**Janusinfo - Läkemedelsinteraktioner:**
-Format: https://janusinfo.se/?s=SÖKTERM
-Exempel: [Janusinfo - Interaktioner](https://janusinfo.se/?s=interaktioner)
+3. **Läkemedelsboken** (lakemedelsboken.se)
+   - Farmakologisk kunskap
+   - Terapeutiska principer
 
-### Kliniska riktlinjer och sjukdomar:
+4. **1177 Vårdpersonal** (vardpersonal.1177.se)
+   - Kliniskt kunskapsstöd
+   - Lokala rutiner och riktlinjer
+   - Regional information
 
-**Vårdhandboken - För kliniska riktlinjer:**
-Format: https://www.vardhandboken.se/sok/?q=SJUKDOM
-Exempel:
-- [Vårdhandboken - Diabetes](https://www.vardhandboken.se/sok/?q=diabetes)
-- [Vårdhandboken - Hypertoni](https://www.vardhandboken.se/sok/?q=hypertoni)
-- [Vårdhandboken - Hjärtsvikt](https://www.vardhandboken.se/sok/?q=hjartsvikt)
+### SEKUNDÄRA KÄLLOR (Vid behov):
 
-**Internetmedicin - För sjukdomsinformation:**
-Format: https://www.internetmedicin.se/search?q=SJUKDOM
-Exempel:
-- [Internetmedicin - Hypertoni](https://www.internetmedicin.se/search?q=hypertoni)
-- [Internetmedicin - Astma](https://www.internetmedicin.se/search?q=astma)
+5. **Socialstyrelsen** (socialstyrelsen.se)
+   - Nationella riktlinjer
+   - Vårdprogram
 
-**Nationella riktlinjer:**
-- [Socialstyrelsen - Nationella riktlinjer](https://www.socialstyrelsen.se/kunskapsstod-och-regler/regler-och-riktlinjer/nationella-riktlinjer)
-- [Cancercentrum - Vårdprogram](https://cancercentrum.se/samverkan/vara-uppdrag/kunskapsstyrning/vardprogram)
+6. **Janusinfo** (janusinfo.se)
+   - Läkemedelsinteraktioner
+   - Regional läkemedelsinformation
 
-### Patientinformation:
+7. **Internetmedicin** (internetmedicin.se)
+   - Sjukdomsinformation
+   - Medicinska uppslagsverk
 
-**1177 Vårdguiden:**
-Format: https://www.1177.se/hitta-vard/sok/?q=ÄMNE
-Exempel: [1177 - Diabetes](https://www.1177.se/hitta-vard/sok/?q=diabetes)
+8. **Cancercentrum** (cancercentrum.se)
+   - Nationella cancervårdprogram
 
-### Internationella riktlinjer:
+### TERTIÄRA KÄLLOR (Internationellt):
 
-**ESC (Kardiologi):**
-- [ESC Guidelines](https://www.escardio.org/Guidelines)
+9. **ESC** (escardio.org) - Kardiologiriktlinjer
+10. **NICE** (nice.org.uk) - Brittiska riktlinjer
 
-**NICE (Brittiska riktlinjer):**
-- [NICE Guidance](https://www.nice.org.uk/guidance)
-
-### Forskning:
-
-**PubMed:**
-Format: https://pubmed.ncbi.nlm.nih.gov/?term=SÖKTERM
-Exempel: [PubMed - Hypertension treatment](https://pubmed.ncbi.nlm.nih.gov/?term=hypertension+treatment)
+### ALLA ANDRA KÄLLOR ÄR FÖRBJUDNA!
 ''';
 
-  /// Instructions for AI on how to format references
+  /// Instructions for AI on inline citation format
   static const String referenceFormatInstructions = '''
-## SÅ HÄR FORMATERAR DU REFERENSER - EXTREMT VIKTIGT!
+## INLINE CITAT - OBLIGATORISKT FORMAT
 
-⚠️ **KRITISKT: Använd ENDAST URL-formaten från listan ovan. Generera ALDRIG egna URLs från din träningsdata!**
+### GRUNDREGEL:
+Placera [Källa-Ämne] DIREKT efter VARJE påstående!
 
-### REGLER FÖR URL-ANVÄNDNING:
+### FORMAT:
 
-1. **För läkemedel - Använd ALLTID FASS-sök:**
-   Format: https://www.fass.se/LIF/produktfakta/sok/?query=LÄKEMEDELSNAMN
-   ✅ Korrekt: [FASS - Metformin](https://www.fass.se/LIF/produktfakta/sok/?query=metformin)
-   ❌ FEL: Använd INTE direktlänkar från din träningsdata!
+**Enkel källa:**
+"Metformin är förstahandsval vid diabetes typ 2 [Vårdhandboken-Diabetes]."
 
-2. **För sjukdomar - Använd Vårdhandboken-sök:**
-   Format: https://www.vardhandboken.se/sok/?q=SJUKDOM
-   ✅ Korrekt: [Vårdhandboken - Diabetes](https://www.vardhandboken.se/sok/?q=diabetes)
-   ❌ FEL: Använd INTE direktlänkar från din träningsdata!
+**Flera källor:**
+"Startdos 500-850 mg x2 dagligen [FASS-Metformin, Vårdhandboken-Diabetes]."
 
-3. **För ytterligare info - Använd Internetmedicin-sök:**
-   Format: https://www.internetmedicin.se/search?q=SJUKDOM
-   ✅ Korrekt: [Internetmedicin - Hypertoni](https://www.internetmedicin.se/search?q=hypertoni)
-   ❌ FEL: Använd INTE direktlänkar från din träningsdata!
+**Med sektion:**
+"Kontraindicerat vid eGFR <30 ml/min [FASS-Metformin, Kontraindikationer]."
 
-### EXEMPEL PÅ KORREKT FORMATERING:
+### FULLSTÄNDIGT EXEMPEL:
 
-**Exempel 1 - Läkemedelsrekommendation:**
-"Metformin 500-1000 mg x2 är förstahandsval vid typ 2-diabetes."
+"METFORMIN VID NJURSVIKT
 
-**Källor:**
-- [FASS - Metformin](https://www.fass.se/LIF/produktfakta/sok/?query=metformin)
-- [Vårdhandboken - Diabetes](https://www.vardhandboken.se/sok/?q=diabetes)
+Normal njurfunktion (eGFR >60):
+Startdos 500-850 mg x2 dagligen [FASS-Metformin].
+Maxdos 2000-3000 mg/dag [FASS-Metformin, Dosering].
 
----
+Måttligt nedsatt (eGFR 30-45):
+Maxdos 1000 mg/dag [FASS-Metformin, Dosering vid njursvikt].
+Regelbunden monitorering rekommenderas [Vårdhandboken-Diabetes, Njursvikt].
 
-**Exempel 2 - Diagnostisk rekommendation:**
-"Vid misstänkt hjärtsvikt: BNP/NT-proBNP, EKG, ekokardiografi."
+Svårt nedsatt (eGFR <30):
+KONTRAINDICERAT [FASS-Metformin, Kontraindikationer]."
 
-**Källor:**
-- [Vårdhandboken - Hjärtsvikt](https://www.vardhandboken.se/sok/?q=hjartsvikt)
-- [ESC Guidelines](https://www.escardio.org/Guidelines)
+### KÄLLNAMN ATT ANVÄNDA:
 
----
+- FASS-[Läkemedelsnamn]
+- Vårdhandboken-[Ämne]
+- Läkemedelsboken-[Ämne]
+- 1177Vårdpersonal-[Ämne]
+- Socialstyrelsen-[Ämne]
+- Janusinfo-[Ämne]
+- Internetmedicin-[Ämne]
+- ESC-[Guideline]
+- NICE-[Guideline]
 
-**Exempel 3 - Läkemedelsinteraktion:**
-"Warfarin och erytromycin: ökad blödningsrisk. Överväg dosjustering och INR-kontroll."
+### KRITISKA REGLER:
 
-**Källor:**
-- [FASS - Warfarin](https://www.fass.se/LIF/produktfakta/sok/?query=warfarin)
-- [FASS - Erytromycin](https://www.fass.se/LIF/produktfakta/sok/?query=erytromycin)
-- [Janusinfo - Interaktioner](https://janusinfo.se/?s=interaktioner)
+✅ **KORREKT:**
+- Inline direkt efter påståendet
+- Tydlig källangivelse
+- Lätt att se exakt vad som kommer varifrån
 
----
+❌ **FELAKTIGT:**
+- Källor samlade i slutet
+- Otydligt vad som hör till vad
+- Inga inline-citat alls
 
-**Exempel 4 - Flera läkemedel:**
-"Förstahandsval vid hypertoni: Enalapril 5-10 mg x1 eller Losartan 50 mg x1."
-
-**Källor:**
-- [FASS - Enalapril](https://www.fass.se/LIF/produktfakta/sok/?query=enalapril)
-- [FASS - Losartan](https://www.fass.se/LIF/produktfakta/sok/?query=losartan)
-- [Vårdhandboken - Hypertoni](https://www.vardhandboken.se/sok/?q=hypertoni)
-
-### VIKTIGA PRINCIPER:
-
-✅ **GÖR:**
-- Använd ENDAST URL-formaten från listan ovan
-- Lägg till söktermer på svenska (t.ex. "diabetes", "hjartsvikt")
-- Ersätt mellanslag med + i söktermer (t.ex. "diabetes+typ+2")
-- Placera källor direkt under relevant text
-- Använd markdown-format: [Textktext](URL)
-
-❌ **GÖR INTE:**
-- Generera direktlänkar från din träningsdata (de är förmodligen föråldrade!)
-- Hitta på nya URL-strukturer
-- Använd länkar du inte ser i exemplen ovan
-- Länka till sidor som inte finns i listan
-
-**KOM IHÅG: Söklänkar fungerar alltid. Direktlänkar från din träningsdata är ofta trasiga!**
+**KOM IHÅG: Varje medicinsk fakta MÅSTE ha sin källa inline!**
 ''';
 }

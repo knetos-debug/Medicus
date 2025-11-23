@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/query_response.dart';
+import '../../../core/config/medical_references.dart';
 import '../../../shared/theme/app_colors.dart';
 import '../../../shared/utils/constants.dart';
 import '../../../shared/utils/formatters.dart';
@@ -157,7 +158,7 @@ class ResponseDisplayScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.all(Constants.spacingMedium),
                   child: MarkdownBody(
-                    data: response.content,
+                    data: _processInlineCitations(response.content),
                     onTapLink: (text, href, title) async {
                       if (href != null) {
                         await _launchUrl(href, context);
@@ -333,6 +334,114 @@ class ResponseDisplayScreen extends StatelessWidget {
       return Icons.stars;
     }
     return Icons.help_outline;
+  }
+
+  /// Process inline citations and convert them to clickable markdown links
+  /// Converts [Source-Topic] to [Source-Topic](url)
+  String _processInlineCitations(String content) {
+    // Pattern to match [Source-Topic] but not existing markdown links [text](url)
+    final citationRegex = RegExp(r'\[([^\]]+)\](?!\()');
+
+    return content.replaceAllMapped(citationRegex, (match) {
+      final citation = match.group(1)!;
+
+      // Split by comma to handle multiple sources: [FASS-Metformin, Vårdhandboken-Diabetes]
+      final sources = citation.split(',').map((s) => s.trim()).toList();
+
+      // Process each source and create links
+      final links = <String>[];
+      var hasAnyLinks = false;
+
+      for (final source in sources) {
+        // Check if this looks like a medical citation (contains dash)
+        if (!source.contains('-')) {
+          links.add(source); // Not a citation, keep as-is
+          continue;
+        }
+
+        // Split source into name and topic
+        final parts = source.split('-');
+        final sourceName = parts[0].trim();
+        final topic = parts.length > 1 ? parts.sublist(1).join('-').trim() : '';
+
+        // Map source name to URL
+        final url = _getSourceUrl(sourceName, topic);
+
+        if (url != null) {
+          // Create markdown link (without outer brackets)
+          links.add('[$source]($url)');
+          hasAnyLinks = true;
+        } else {
+          // Return as-is if no URL mapping found
+          links.add(source);
+        }
+      }
+
+      // If we created any links, return them joined
+      // Otherwise, keep the original bracketed format
+      if (hasAnyLinks) {
+        return links.join(', ');
+      } else {
+        return '[$citation]'; // Keep original
+      }
+    });
+  }
+
+  /// Map source name to search URL with topic
+  String? _getSourceUrl(String sourceName, String topic) {
+    final lowerSource = sourceName.toLowerCase().replaceAll(' ', '');
+
+    // FASS - Drug information
+    if (lowerSource.contains('fass')) {
+      return '${MedicalReferences.fassSearch}${Uri.encodeComponent(topic)}';
+    }
+
+    // Vårdhandboken - Clinical guidelines
+    if (lowerSource.contains('vardhandboken') || lowerSource.contains('vårdhandboken')) {
+      return '${MedicalReferences.vardhandbokenSearch}${Uri.encodeComponent(topic)}';
+    }
+
+    // Läkemedelsboken - Pharmacology
+    if (lowerSource.contains('lakemedelsboken') || lowerSource.contains('läkemedelsboken')) {
+      return MedicalReferences.lakemedelsboken;
+    }
+
+    // 1177 Vårdpersonal - Professional knowledge
+    if (lowerSource.contains('1177') || lowerSource.contains('vardpersonal') || lowerSource.contains('vårdpersonal')) {
+      return MedicalReferences.vardpersonal1177Base;
+    }
+
+    // Socialstyrelsen - National guidelines
+    if (lowerSource.contains('socialstyrelsen')) {
+      return MedicalReferences.socialstyrelsen;
+    }
+
+    // Janusinfo - Drug interactions
+    if (lowerSource.contains('janusinfo')) {
+      return '${MedicalReferences.janusinfoSearch}${Uri.encodeComponent(topic)}';
+    }
+
+    // Internetmedicin - Disease information
+    if (lowerSource.contains('internetmedicin')) {
+      return '${MedicalReferences.internetMedicinSearch}${Uri.encodeComponent(topic)}';
+    }
+
+    // Cancercentrum - Cancer care programs
+    if (lowerSource.contains('cancer')) {
+      return MedicalReferences.cancercentrum;
+    }
+
+    // ESC - Cardiology guidelines
+    if (lowerSource.contains('esc')) {
+      return MedicalReferences.escGuidelines;
+    }
+
+    // NICE - UK guidelines
+    if (lowerSource.contains('nice')) {
+      return MedicalReferences.niceGuidance;
+    }
+
+    return null; // No mapping found
   }
 
   /// Launch URL in browser
