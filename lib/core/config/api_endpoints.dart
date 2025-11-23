@@ -10,8 +10,9 @@ class APIEndpoints {
   static const String openaiModel = 'gpt-4-turbo-preview';
 
   // Google (Gemini)
-  static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1';
-  static const String geminiModel = 'gemini-1.5-flash'; // v1 API doesn't support -latest suffix
+  // Note: Gemini 1.5 models are only available in v1beta API
+  static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+  static const String geminiModel = 'gemini-1.5-flash';
 
   static String geminiGenerateContent(String apiKey) {
     return '$geminiBaseUrl/models/$geminiModel:generateContent?key=$apiKey';
