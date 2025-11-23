@@ -15,4 +15,5 @@ flutter --version
 flutter pub get
 
 # Build web app
-flutter build web --release --web-renderer canvaskit
+# Note: --web-renderer was removed in Flutter 3.22+, CanvasKit is now default
+flutter build web --release
