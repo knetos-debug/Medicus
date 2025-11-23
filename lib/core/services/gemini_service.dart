@@ -50,6 +50,15 @@ class GeminiService implements AIProvider {
 
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
+
+        // Check if response has the expected structure
+        if (data['candidates'] == null || data['candidates'].isEmpty) {
+          throw Exception(
+            'Gemini API returned empty response. '
+            'This may be due to safety filters or content policy.'
+          );
+        }
+
         final content =
             data['candidates'][0]['content']['parts'][0]['text'] as String;
 
@@ -63,10 +72,36 @@ class GeminiService implements AIProvider {
           },
         );
       } else {
-        final errorData = jsonDecode(response.body);
-        throw Exception(
-          'API Error ${response.statusCode}: ${errorData['error']?['message'] ?? 'Unknown error'}',
-        );
+        // Parse Gemini error format
+        String errorMessage = 'Unknown error';
+        try {
+          final errorData = jsonDecode(response.body);
+          if (errorData['error'] != null) {
+            errorMessage = errorData['error']['message'] ??
+                          errorData['error']['status'] ??
+                          'Unknown error';
+
+            // Add helpful context for common errors
+            if (response.statusCode == 400) {
+              if (errorMessage.contains('API_KEY_INVALID')) {
+                errorMessage = 'API-nyckeln är ogiltig. Kontrollera att du har kopierat hela nyckeln.';
+              } else {
+                errorMessage += '\n\nKontrollera att API-nyckeln är korrekt.';
+              }
+            } else if (response.statusCode == 403) {
+              errorMessage = 'API-nyckeln saknar behörighet eller Gemini API är inte aktiverat.\n\n'
+                           'Aktivera Gemini API på: https://makersuite.google.com';
+            } else if (response.statusCode == 429) {
+              errorMessage = 'Rate limit nådd. Försök igen om en stund.';
+            }
+          }
+        } catch (e) {
+          errorMessage = response.body.length > 200
+            ? response.body.substring(0, 200) + '...'
+            : response.body;
+        }
+
+        throw Exception('Gemini API Error (${response.statusCode}): $errorMessage');
       }
     } catch (e) {
       return QueryResponse(
