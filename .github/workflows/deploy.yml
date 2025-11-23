@@ -31,7 +31,7 @@ jobs:
         run: flutter test || echo "No tests found, continuing..."
 
       - name: Build web
-        run: flutter build web --release --web-renderer canvaskit
+        run: flutter build web --release
 
       - name: Deploy to Vercel (Production)
         if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/claude/clinical-ai-pwa-01QFyTvECaXN6RVYhW24LQ7B') && github.event_name == 'push'
