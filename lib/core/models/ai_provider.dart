@@ -2,10 +2,36 @@
 enum AIProviderType {
   claude,
   openai,
-  gemini,
+  gemini;
+
+  /// Parse from storage key (web-safe alternative to values.byName)
+  static AIProviderType? fromStorageKey(String key) {
+    switch (key) {
+      case 'claude':
+        return AIProviderType.claude;
+      case 'openai':
+        return AIProviderType.openai;
+      case 'gemini':
+        return AIProviderType.gemini;
+      default:
+        return null;
+    }
+  }
 }
 
 extension AIProviderExtension on AIProviderType {
+  /// Storage-safe string key (use instead of .name for web compatibility)
+  String get storageKey {
+    switch (this) {
+      case AIProviderType.claude:
+        return 'claude';
+      case AIProviderType.openai:
+        return 'openai';
+      case AIProviderType.gemini:
+        return 'gemini';
+    }
+  }
+
   String get displayName {
     switch (this) {
       case AIProviderType.claude:

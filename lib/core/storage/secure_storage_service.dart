@@ -18,7 +18,7 @@ class SecureStorageService {
   Future<void> saveSelectedProvider(AIProviderType provider) async {
     await _storage.write(
       key: _providerKey,
-      value: provider.name,
+      value: provider.storageKey,
     );
   }
 
@@ -27,31 +27,25 @@ class SecureStorageService {
     final providerName = await _storage.read(key: _providerKey);
     if (providerName == null) return null;
 
-    try {
-      return AIProviderType.values.firstWhere(
-        (e) => e.name == providerName,
-      );
-    } catch (e) {
-      return null;
-    }
+    return AIProviderType.fromStorageKey(providerName);
   }
 
   /// Save an API key for a specific provider
   Future<void> saveApiKey(AIProviderType provider, String apiKey) async {
     await _storage.write(
-      key: '$_apiKeyPrefix${provider.name}',
+      key: '$_apiKeyPrefix${provider.storageKey}',
       value: apiKey,
     );
   }
 
   /// Get the API key for a specific provider
   Future<String?> getApiKey(AIProviderType provider) async {
-    return await _storage.read(key: '$_apiKeyPrefix${provider.name}');
+    return await _storage.read(key: '$_apiKeyPrefix${provider.storageKey}');
   }
 
   /// Delete the API key for a specific provider
   Future<void> deleteApiKey(AIProviderType provider) async {
-    await _storage.delete(key: '$_apiKeyPrefix${provider.name}');
+    await _storage.delete(key: '$_apiKeyPrefix${provider.storageKey}');
   }
 
   /// Check if an API key exists for a provider

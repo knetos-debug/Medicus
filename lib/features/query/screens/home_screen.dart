@@ -202,7 +202,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
   IconData _getProviderIcon(provider) {
     if (provider == null) return Icons.help_outline;
-    switch (provider.name) {
+    switch (provider.storageKey) {
       case 'claude':
         return Icons.psychology;
       case 'openai':

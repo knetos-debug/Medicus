@@ -96,7 +96,7 @@ class _CredentialSetupScreenState
                   obscureText: _obscureText,
                   validator: (value) => Validators.validateApiKey(
                     value,
-                    provider: widget.provider.name,
+                    provider: widget.provider.storageKey,
                   ),
                   maxLines: 1,
                 ),
