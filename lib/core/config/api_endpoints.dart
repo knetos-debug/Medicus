@@ -10,13 +10,15 @@ class APIEndpoints {
   static const String openaiModel = 'gpt-4-turbo-preview';
 
   // Google (Gemini)
-  static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
-  static const String geminiModel = 'gemini-1.5-flash'; // Updated to latest stable model
+  static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1';
+  static const String geminiModel = 'gemini-1.5-flash-latest'; // Use -latest suffix for current version
 
   static String geminiGenerateContent(String apiKey) {
     return '$geminiBaseUrl/models/$geminiModel:generateContent?key=$apiKey';
   }
 
-  // Alternative: Use gemini-1.5-pro for better quality (but slower and may have costs)
-  // static const String geminiModel = 'gemini-1.5-pro';
+  // Alternative models to try if -latest doesn't work:
+  // 'gemini-1.5-flash' (without -latest)
+  // 'gemini-1.5-pro-latest'
+  // 'gemini-pro' (older version)
 }
