@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/models/query_response.dart';
 import '../../../shared/theme/app_colors.dart';
 import '../../../shared/utils/constants.dart';
@@ -121,6 +122,11 @@ class ResponseDisplayScreen extends StatelessWidget {
                   padding: const EdgeInsets.all(Constants.spacingMedium),
                   child: MarkdownBody(
                     data: response.content,
+                    onTapLink: (text, href, title) async {
+                      if (href != null) {
+                        await _launchUrl(href, context);
+                      }
+                    },
                     styleSheet: MarkdownStyleSheet.fromTheme(
                       Theme.of(context),
                     ).copyWith(
@@ -146,6 +152,17 @@ class ResponseDisplayScreen extends StatelessWidget {
                         color: AppColors.textSecondary,
                       ),
                       listBullet: Theme.of(context).textTheme.bodyMedium,
+                      // Style links prominently
+                      a: const TextStyle(
+                        color: AppColors.primary,
+                        decoration: TextDecoration.underline,
+                        fontWeight: FontWeight.w600,
+                      ),
+                      // Style link bullets
+                      blockquote: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontStyle: FontStyle.italic,
+                            color: AppColors.textSecondary,
+                          ),
                     ),
                   ),
                 ),
@@ -171,7 +188,7 @@ class ResponseDisplayScreen extends StatelessWidget {
                     const SizedBox(width: Constants.spacingSmall),
                     Expanded(
                       child: Text(
-                        'Verifiera alltid AI-genererade rekommendationer med aktuella riktlinjer och använd ditt kliniska omdöme.',
+                        'Verifiera alltid AI-genererade rekommendationer genom att klicka på källhänvisningarna och använd ditt kliniska omdöme.',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w600,
                             ),
@@ -199,5 +216,36 @@ class ResponseDisplayScreen extends StatelessWidget {
       return Icons.stars;
     }
     return Icons.help_outline;
+  }
+
+  /// Launch URL in browser
+  Future<void> _launchUrl(String urlString, BuildContext context) async {
+    try {
+      final url = Uri.parse(urlString);
+      if (await canLaunchUrl(url)) {
+        await launchUrl(
+          url,
+          mode: LaunchMode.externalApplication, // Open in external browser
+        );
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Kunde inte öppna länk: $urlString'),
+              backgroundColor: AppColors.danger,
+            ),
+          );
+        }
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Fel vid öppning av länk: $e'),
+            backgroundColor: AppColors.danger,
+          ),
+        );
+      }
+    }
   }
 }

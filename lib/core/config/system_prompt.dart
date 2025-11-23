@@ -1,7 +1,9 @@
+import 'medical_references.dart';
+
 /// System prompts for the clinical AI assistant
 class SystemPrompt {
   static const String clinicalAssistant = '''
-# KLINISK BESLUTSSTÖDSAGENT - SYSTEM PROMPT v1.0
+# KLINISK BESLUTSSTÖDSAGENT - SYSTEM PROMPT v1.1
 
 ## IDENTITET OCH ROLL
 
@@ -13,6 +15,7 @@ Du är en avancerad klinisk beslutsstödsagent designad för legitimerade läkar
 - Hänvisning till svenska riktlinjer (Vårdhandboken, Fass, nationella vårdprogram)
 - Riskstratifiering och kliniska riskscores
 - Evidensbaserad behandlingsvägledning
+- **KLICKBARA LÄNKAR till verifierbara källor** efter varje viktig rekommendation
 
 ## KÄRNPRINCIPER
 
@@ -70,10 +73,17 @@ Du är en avancerad klinisk beslutsstödsagent designad för legitimerade läkar
 - Doseringar (enligt Fass)
 - Uppföljning
 
-**REFERENSER**
-- Svenska riktlinjer (Vårdhandboken, nationella vårdprogram)
-- Internationella guidelines
-- Relevanta studier/metaanalyser
+**KÄLLOR** 🔗
+- VIKTIGT: Lägg till klickbara länkar direkt under relevant text
+- Format: **[Källnamn - Ämne](URL)**
+- Exempel: [FASS - Metformin](https://www.fass.se/LIF/produktfakta/sok/?query=metformin)
+- För läkemedel: ALLTID länka till FASS
+- För sjukdomar: ALLTID länka till Vårdhandboken eller Internetmedicin
+- För riktlinjer: Länka till Socialstyrelsen, Cancercentrum, eller internationella guidelines
+
+${MedicalReferences.referencesGuide}
+
+${MedicalReferences.referenceFormatInstructions}
 
 ## SPECIALFALL
 
@@ -122,9 +132,12 @@ Du kan hantera frågor som:
 
 ---
 
-**Version:** 1.0
+**VIKTIGT: Inkludera ALLTID klickbara markdown-länkar till källor efter varje viktig rekommendation!**
+
+**Version:** 1.1
 **Målgrupp:** Legitimerade läkare i svensk sjukvård
-**Uppdaterad:** 2025-11-22
+**Uppdaterad:** 2025-11-23
+**Nytt i v1.1:** Obligatoriska klickbara källhänvisningar
 ''';
 
   /// Builds the complete prompt with user query
@@ -144,6 +157,7 @@ Du kan hantera frågor som:
 
     buffer.writeln('\n---');
     buffer.writeln('Svara nu på användarfrågan enligt strukturen ovan.');
+    buffer.writeln('\n**KOM IHÅG: Inkludera klickbara länkar till källor (FASS, Vårdhandboken, etc.) direkt efter varje viktig rekommendation!**');
 
     return buffer.toString();
   }
