@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/models/ai_provider.dart';
+import '../../../core/models/query_request.dart';
 import '../../../core/storage/secure_storage_service.dart';
 import '../../../core/services/ai_service_factory.dart';
 import '../../../core/services/ai_provider_interface.dart';
@@ -70,7 +71,8 @@ class AuthActions {
   }
 
   /// Test connection with provided credentials
-  Future<bool> testConnection({
+  /// Returns a map with 'success' (bool) and optional 'error' (String)
+  Future<Map<String, dynamic>> testConnection({
     required AIProviderType provider,
     required String apiKey,
   }) async {
@@ -80,9 +82,25 @@ class AuthActions {
         apiKey: apiKey,
       );
 
-      return await service.testConnection();
+      // Create a simple test request
+      final testRequest = QueryRequest(
+        query: 'Test',
+        timestamp: DateTime.now(),
+      );
+
+      // Send the test request
+      final response = await service.sendQuery(testRequest);
+
+      if (response.success) {
+        return {'success': true};
+      } else {
+        return {
+          'success': false,
+          'error': response.error ?? 'Unknown error'
+        };
+      }
     } catch (e) {
-      return false;
+      return {'success': false, 'error': e.toString()};
     }
   }
 

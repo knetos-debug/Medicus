@@ -197,15 +197,20 @@ class _CredentialSetupScreenState
       final authActions = ref.read(authActionsProvider);
 
       // Test connection
-      final isConnected = await authActions.testConnection(
+      final result = await authActions.testConnection(
         provider: widget.provider,
         apiKey: _apiKeyController.text.trim(),
       );
 
-      if (!isConnected) {
+      if (result['success'] != true) {
+        final errorMsg = result['error'] ?? 'Unknown error';
         throw Exception(
-          'Kunde inte ansluta till ${widget.provider.displayName}. '
-          'Kontrollera din API-nyckel och försök igen.',
+          'Kunde inte ansluta till ${widget.provider.displayName}.\n\n'
+          'Fel: $errorMsg\n\n'
+          'Kontrollera:\n'
+          '• API-nyckeln är korrekt\n'
+          '• Betalningsmetod är tillagd\n'
+          '• API-nyckeln har behörigheter',
         );
       }
 
