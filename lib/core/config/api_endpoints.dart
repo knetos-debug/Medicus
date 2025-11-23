@@ -11,14 +11,9 @@ class APIEndpoints {
 
   // Google (Gemini)
   static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1';
-  static const String geminiModel = 'gemini-1.5-flash-latest'; // Use -latest suffix for current version
+  static const String geminiModel = 'gemini-1.5-flash'; // v1 API doesn't support -latest suffix
 
   static String geminiGenerateContent(String apiKey) {
     return '$geminiBaseUrl/models/$geminiModel:generateContent?key=$apiKey';
   }
-
-  // Alternative models to try if -latest doesn't work:
-  // 'gemini-1.5-flash' (without -latest)
-  // 'gemini-1.5-pro-latest'
-  // 'gemini-pro' (older version)
 }
