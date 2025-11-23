@@ -11,9 +11,12 @@ class APIEndpoints {
 
   // Google (Gemini)
   static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
-  static const String geminiModel = 'gemini-pro';
+  static const String geminiModel = 'gemini-1.5-flash'; // Updated to latest stable model
 
   static String geminiGenerateContent(String apiKey) {
     return '$geminiBaseUrl/models/$geminiModel:generateContent?key=$apiKey';
   }
+
+  // Alternative: Use gemini-1.5-pro for better quality (but slower and may have costs)
+  // static const String geminiModel = 'gemini-1.5-pro';
 }
