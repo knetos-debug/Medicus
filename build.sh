@@ -15,4 +15,4 @@ flutter --version
 flutter pub get
 
 # Build web app
-flutter build web --release
+flutter build web --release --web-renderer canvaskit
