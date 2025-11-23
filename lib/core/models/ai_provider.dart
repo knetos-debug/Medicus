@@ -1,8 +1,40 @@
 /// Supported AI providers
 enum AIProviderType {
-  claude,
-  openai,
-  gemini;
+  claude(
+    storageKey: 'claude',
+    displayName: 'Claude (Anthropic)',
+    description: 'Avancerad medicinsk förståelse och resonemang',
+    apiKeyUrl: 'https://console.anthropic.com',
+    instructions: 'Skaffa en API-nyckel på console.anthropic.com',
+  ),
+  openai(
+    storageKey: 'openai',
+    displayName: 'ChatGPT (OpenAI)',
+    description: 'Välkänd och pålitlig AI-assistent',
+    apiKeyUrl: 'https://platform.openai.com',
+    instructions: 'Skaffa en API-nyckel på platform.openai.com',
+  ),
+  gemini(
+    storageKey: 'gemini',
+    displayName: 'Gemini (Google)',
+    description: 'Googles senaste AI-modell',
+    apiKeyUrl: 'https://makersuite.google.com',
+    instructions: 'Skaffa en API-nyckel på makersuite.google.com',
+  );
+
+  const AIProviderType({
+    required this.storageKey,
+    required this.displayName,
+    required this.description,
+    required this.apiKeyUrl,
+    required this.instructions,
+  });
+
+  final String storageKey;
+  final String displayName;
+  final String description;
+  final String apiKeyUrl;
+  final String instructions;
 
   /// Parse from storage key (web-safe alternative to values.byName)
   static AIProviderType? fromStorageKey(String key) {
@@ -15,64 +47,6 @@ enum AIProviderType {
         return AIProviderType.gemini;
       default:
         return null;
-    }
-  }
-}
-
-extension AIProviderExtension on AIProviderType {
-  /// Storage-safe string key (use instead of .name for web compatibility)
-  String get storageKey {
-    switch (this) {
-      case AIProviderType.claude:
-        return 'claude';
-      case AIProviderType.openai:
-        return 'openai';
-      case AIProviderType.gemini:
-        return 'gemini';
-    }
-  }
-
-  String get displayName {
-    switch (this) {
-      case AIProviderType.claude:
-        return 'Claude (Anthropic)';
-      case AIProviderType.openai:
-        return 'ChatGPT (OpenAI)';
-      case AIProviderType.gemini:
-        return 'Gemini (Google)';
-    }
-  }
-
-  String get description {
-    switch (this) {
-      case AIProviderType.claude:
-        return 'Avancerad medicinsk förståelse och resonemang';
-      case AIProviderType.openai:
-        return 'Välkänd och pålitlig AI-assistent';
-      case AIProviderType.gemini:
-        return 'Googles senaste AI-modell';
-    }
-  }
-
-  String get apiKeyUrl {
-    switch (this) {
-      case AIProviderType.claude:
-        return 'https://console.anthropic.com';
-      case AIProviderType.openai:
-        return 'https://platform.openai.com';
-      case AIProviderType.gemini:
-        return 'https://makersuite.google.com';
-    }
-  }
-
-  String get instructions {
-    switch (this) {
-      case AIProviderType.claude:
-        return 'Skaffa en API-nyckel på console.anthropic.com';
-      case AIProviderType.openai:
-        return 'Skaffa en API-nyckel på platform.openai.com';
-      case AIProviderType.gemini:
-        return 'Skaffa en API-nyckel på makersuite.google.com';
     }
   }
 }
