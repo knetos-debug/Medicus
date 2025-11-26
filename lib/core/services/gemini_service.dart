@@ -28,9 +28,10 @@ class GeminiService implements AIProvider {
 
       final response = await http
           .post(
-            Uri.parse(APIEndpoints.geminiGenerateContent(apiKey)),
+            Uri.parse(APIEndpoints.geminiGenerateContentUrl),
             headers: {
               'Content-Type': 'application/json',
+              'x-goog-api-key': apiKey, // SECURITY: API key in header, not URL
             },
             body: jsonEncode({
               'contents': [

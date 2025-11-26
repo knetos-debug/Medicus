@@ -14,7 +14,8 @@ class APIEndpoints {
   static const String geminiBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
   static const String geminiModel = 'gemini-2.5-flash';
 
-  static String geminiGenerateContent(String apiKey) {
-    return '$geminiBaseUrl/models/$geminiModel:generateContent?key=$apiKey';
+  // SECURITY: API key should be passed in header, not URL
+  static String get geminiGenerateContentUrl {
+    return '$geminiBaseUrl/models/$geminiModel:generateContent';
   }
 }
